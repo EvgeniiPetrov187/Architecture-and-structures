@@ -1,42 +1,27 @@
-package com.petrov;
+package com.petrov.requests;
 
-        import java.io.BufferedReader;
-        import java.io.IOException;
-        import java.io.InputStreamReader;
-        import java.io.PrintWriter;
-        import java.net.ServerSocket;
-        import java.net.Socket;
-        import java.nio.charset.StandardCharsets;
-        import java.nio.file.Files;
-        import java.nio.file.Path;
-        import java.nio.file.Paths;
+import com.petrov.paths.Sites;
 
-public class Main {
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-    private static String WWW = "/Users/macbook/IdeaProjects/first-geek-web-server/www";
+// приготовление запросов
+public class RequestForSite {
 
-    public static void main(String[] args) {
-        try (ServerSocket serverSocket = new ServerSocket(8080)) {
-            System.out.println("Server started!");
-
-            while (true) {
-                Socket socket = serverSocket.accept();
-                System.out.println("New client connected!");
-
-                new Thread(() -> handleRequest(socket)).start();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void handleRequest(Socket socket) {
+    public void handleRequest(Socket socket) {
         try (BufferedReader input = new BufferedReader(
                 new InputStreamReader(
                         socket.getInputStream(), StandardCharsets.UTF_8));
              PrintWriter output = new PrintWriter(socket.getOutputStream())
         ) {
-            while (!input.ready());
+            while (!input.ready()) ;
 
             String firstLine = input.readLine();
             String[] parts = firstLine.split(" ");
@@ -45,7 +30,7 @@ public class Main {
                 System.out.println(input.readLine());
             }
 
-            Path path = Paths.get(WWW, parts[1]);
+            Path path = Paths.get(String.valueOf(Sites.WWW), parts[1]);
             if (!Files.exists(path)) {
                 output.println("HTTP/1.1 404 NOT_FOUND");
                 output.println("Content-Type: text/html; charset=utf-8");
