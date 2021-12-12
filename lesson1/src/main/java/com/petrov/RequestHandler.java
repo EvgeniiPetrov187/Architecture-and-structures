@@ -1,5 +1,6 @@
 package com.petrov;
 
+import com.petrov.config.Config;
 import com.petrov.domain.HttpRequest;
 import com.petrov.domain.HttpResponse;
 
@@ -10,18 +11,24 @@ public class RequestHandler implements Runnable {
 
     private final SocketService socketService;
     private final RequestParser requestParser;
+    private final Config config;
 
-    public RequestHandler(SocketService socketService, RequestParser requestParser) {
+    public RequestHandler(SocketService socketService, RequestParser requestParser, Config config) {
         this.socketService = socketService;
         this.requestParser = requestParser;
+        this.config = config;
     }
 
     @Override
     public void run() {
         Deque<String> rawRequest = socketService.readRequest();
         HttpRequest httpRequest = requestParser.parseRequest(rawRequest);
-        HttpResponse httpResponse = new HttpResponse();
-        httpResponse.getResponse(httpRequest, socketService);
+        HttpResponse.createResponseBuilder()
+                .withHttpRequest(httpRequest)
+                .withConfig(config)
+                .withSocketService(socketService)
+                .withResponse()
+                .build();
 
         try {
             socketService.close();

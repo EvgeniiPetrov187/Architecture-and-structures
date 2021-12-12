@@ -13,6 +13,10 @@ public class SocketService implements Closeable {
         this.socket = socket;
     }
 
+    public static SocketService createSocketService(Socket socket) {
+        return new SocketService(socket);
+    }
+
     public Deque<String> readRequest() {
         try {
             BufferedReader input = new BufferedReader(
