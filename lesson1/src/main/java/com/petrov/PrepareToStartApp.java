@@ -1,22 +1,25 @@
 package com.petrov;
 
-import com.petrov.connections.ConnectorForSite;
-import com.petrov.requests.RequestForSite;
-
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 // приготовление для старта
 public class PrepareToStartApp {
 
     public static void startApp() {
-        ConnectorForSite connectorForSite = new ConnectorForSite();
-        RequestForSite requestForSite = new RequestForSite();
+        try (ServerSocket serverSocket = new ServerSocket(Config.PORT)) {
+            System.out.println("Server started!");
+            RequestParser requestParser = new RequestParser();
 
-        try {
-            connectorForSite.connect(requestForSite);
+            while (true) {
+                Socket socket = serverSocket.accept();
+                System.out.println("New client connected!");
+
+                new Thread(new RequestHandler(new SocketService(socket), requestParser)).start();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        requestForSite.handleRequest(connectorForSite.getSocket());
     }
 }
