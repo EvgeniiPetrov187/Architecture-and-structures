@@ -1,4 +1,4 @@
-package com.petrov;
+package com.petrov.service;
 
 import com.petrov.domain.HttpRequest;
 
@@ -6,30 +6,28 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RequestParser {
-    public HttpRequest parseRequest(Deque<String> rawRequest) {
-        String[] firstLine = rawRequest.pollFirst().split(" ");
-        String method = firstLine[0];
-        String url = firstLine[1];
+class RequestParserImpl implements RequestParser {
 
-        Map<String, String> headers = new HashMap<>();
+    public HttpRequest parseRequest(Deque<String> rawRequest) {
+        HttpRequest.RequestBuilder builder = HttpRequest.createRequestBuilder();
+        String[] firstLine = rawRequest.pollFirst().split(" ");
+        builder.withMethod(firstLine[0]);
+        builder.withUrl(firstLine[1]);
+
         while (!rawRequest.isEmpty()) {
             String line = rawRequest.pollFirst();
             if (line.isBlank()) {
                 break;
             }
             String[] header = line.split(": ");
-            headers.put(header[0], header[1]);
+            builder.withHeader(header[0], header[1]);
         }
         StringBuilder body = new StringBuilder();
         while (!rawRequest.isEmpty()) {
             body.append(rawRequest.pollFirst());
         }
-        return HttpRequest.createRequestBuilder()
-                .withMethod(method)
-                .withUrl(url)
-                .withHeaders(headers)
-                .withBody(body.toString())
-                .build();
+        builder.withBody(body.toString());
+        return builder.build();
     }
 }
+

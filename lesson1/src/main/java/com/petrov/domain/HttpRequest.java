@@ -1,5 +1,6 @@
 package com.petrov.domain;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequest {
@@ -53,35 +54,42 @@ public class HttpRequest {
 
     public static class RequestBuilder {
 
-        private final HttpRequest httpRequest;
+        private String method;
+
+        private String url;
+
+        private final Map<String, String> headers = new HashMap<>();
+
+        private String body;
 
         private RequestBuilder() {
-            this.httpRequest = new HttpRequest();
         }
 
         public RequestBuilder withMethod(String method) {
-            this.httpRequest.method = method;
+            this.method = method;
             return this;
         }
 
         public RequestBuilder withUrl(String url) {
-            this.httpRequest.url = url;
+            this.url = url;
             return this;
         }
 
-        public RequestBuilder withHeaders(Map<String, String> headers) {
-            this.httpRequest.headers = headers;
+        public RequestBuilder withHeader(String header, String value) {
+            this.headers.put(header, value);
             return this;
         }
 
         public RequestBuilder withBody(String body) {
-            this.httpRequest.body = body;
+            this.body = body;
             return this;
         }
 
         public HttpRequest build() {
-            return this.httpRequest;
+            return new HttpRequest(method, url, headers, body);
         }
+
+
     }
 }
 
