@@ -1,124 +1,70 @@
 package com.petrov.domain;
 
-import com.petrov.SocketService;
-import com.petrov.config.Config;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import static com.petrov.ConfigHttp.*;
-import static com.petrov.HttpMethods.*;
-
+import java.util.HashMap;
+import java.util.Map;
 
 public class HttpResponse {
 
-    private StringBuilder response = new StringBuilder();
+    private final ResponseCode status;
 
-    private HttpRequest httpRequest;
+    private final Map<String, String> headers;
 
-    private SocketService socketService;
+    private final String body;
 
-    private Config config;
-
-
-    public HttpResponse(HttpRequest httpRequest, SocketService socketService, Config config) {
-        this.httpRequest = httpRequest;
-        this.socketService = socketService;
-        this.config = config;
+    private HttpResponse(ResponseCode status, Map<String, String> headers, String body) {
+        this.status = status;
+        this.headers = headers;
+        this.body = body;
     }
 
-    public HttpResponse() {
+    public ResponseCode getStatus() {
+        return status;
     }
 
-    public HttpRequest getHttpRequest() {
-        return httpRequest;
+    public Map<String, String> getHeaders() {
+        return headers;
     }
 
-    public SocketService getSocketService() {
-        return socketService;
+    public String getBody() {
+        return body;
     }
 
-    public Config getConfig() {
-        return config;
+    public static Builder createBuilder() {
+        return new Builder();
     }
 
-    public StringBuilder getResponse(HttpRequest httpRequest, SocketService socketService, Config config) {
-        if (httpRequest.getMethod().equalsIgnoreCase(String.valueOf(GET))) {
-            setResponseForGetMethod(httpRequest, socketService, config);
-        } else if (httpRequest.getMethod().equalsIgnoreCase(String.valueOf(POST))) {
-            setResponseForPostMethod(httpRequest, socketService, config);
-        } else if (httpRequest.getMethod().equalsIgnoreCase(String.valueOf(PUT))) {
-            setResponseForPutMethod(httpRequest, socketService, config);
-        } else {
-            response.append(HTTP_NOT_ALLOWED + CONTENT_TYPE + NOT_ALLOWED_H1);
-            socketService.writeResponse(response.toString());
-        }
-        return response;
-    }
+    public static class Builder {
 
-    private void setResponseForGetMethod(HttpRequest httpRequest, SocketService socketService, Config config) {
-        Path path = Paths.get(config.getWwwHome(), httpRequest.getUrl());
-        if (!Files.exists(path)) {
-            response.append(HTTP_NOT_FOUND + CONTENT_TYPE + NOT_FOUND_H1);
-            socketService.writeResponse(response.toString());
-            return;
+        private ResponseCode status;
+
+        private final Map<String, String> headers = new HashMap<>();
+
+        private String body;
+
+        private Builder() {
         }
 
-        response.append(HTTP_OK + CONTENT_TYPE);
-
-        try {
-            Files.readAllLines(path).forEach(response::append);
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-        socketService.writeResponse(response.toString());
-    }
-
-    private void setResponseForPostMethod(HttpRequest httpRequest, SocketService socketService, Config config) {
-        //not ready
-    }
-
-    private void setResponseForPutMethod(HttpRequest httpRequest, SocketService socketService, Config config) {
-        //not ready
-    }
-
-    public static HttpResponse.ResponseBuilder createResponseBuilder() {
-        return new HttpResponse.ResponseBuilder();
-    }
-
-    public static class ResponseBuilder {
-
-        public static ResponseBuilder createResponseBuilder() {
-            return new ResponseBuilder();
-        }
-
-        private final HttpResponse httpResponse;
-
-        private ResponseBuilder() {
-            this.httpResponse = new HttpResponse();
-        }
-
-        public HttpResponse.ResponseBuilder withResponse() {
-            this.httpResponse.response = httpResponse.getResponse(httpResponse.httpRequest, httpResponse.socketService, httpResponse.config);
+        public Builder withStatus(ResponseCode status) {
+            this.status = status;
             return this;
         }
-        public HttpResponse.ResponseBuilder withHttpRequest(HttpRequest httpRequest) {
-            this.httpResponse.httpRequest = httpRequest;
+
+        public Builder withHeader(String header, String value) {
+            this.headers.put(header, value);
             return this;
         }
-        public HttpResponse.ResponseBuilder withConfig(Config config) {
-            this.httpResponse.config = config;
-            return this;
-        }
-        public HttpResponse.ResponseBuilder withSocketService(SocketService socketService) {
-            this.httpResponse.socketService = socketService;
+
+        public Builder withBody(String body) {
+            this.body = body;
             return this;
         }
 
         public HttpResponse build() {
-            return this.httpResponse;
+            if (this.status == null) {
+                throw new IllegalArgumentException("Status is obligatory for Response");
+            }
+            return new HttpResponse(status, headers, body);
         }
     }
 }
+

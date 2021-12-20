@@ -1,4 +1,4 @@
-package com.petrov;
+package com.petrov.service;
 
 import java.io.*;
 import java.net.Socket;
@@ -6,15 +6,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Deque;
 import java.util.LinkedList;
 
-public class SocketService implements Closeable {
+class SocketServiceImpl implements SocketService {
+
     private final Socket socket;
 
-    public SocketService(Socket socket) {
+    SocketServiceImpl(Socket socket) {
         this.socket = socket;
-    }
-
-    public static SocketService createSocketService(Socket socket) {
-        return new SocketService(socket);
     }
 
     public Deque<String> readRequest() {
