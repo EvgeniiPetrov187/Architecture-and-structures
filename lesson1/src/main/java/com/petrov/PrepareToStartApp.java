@@ -1,7 +1,8 @@
 package com.petrov;
 
 import com.petrov.config.Config;
-import com.petrov.config.ConfigFactory;
+import com.petrov.handler.MethodHandlerFactory;
+import com.petrov.handler.RequestHandler;
 import com.petrov.service.*;
 
 import java.io.IOException;
@@ -19,11 +20,14 @@ public class PrepareToStartApp {
                 Socket socket = serverSocket.accept();
                 System.out.println("New client connected!");
 
+                SocketService socketService = SocketServiceFactory.createSocketService(socket);
+                ResponseSerializer responseSerializer = ResponseSerializerFactory.createResponseSerializer();
+
                 new Thread(new RequestHandler(
-                        SocketServiceFactory.createSocketService(socket),
+                        socketService,
                         RequestParserFactory.createRequestParser(),
-                        ResponseSerializerFactory.createResponseSerializer(),
-                        config)).start();
+                        MethodHandlerFactory.create(socketService, responseSerializer, config))
+                ).start();
             }
         } catch (IOException e) {
             e.printStackTrace();
