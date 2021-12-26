@@ -7,14 +7,14 @@ import com.petrov.domain.ResponseCode;
 import com.petrov.service.ResponseSerializer;
 import com.petrov.service.SocketService;
 
-@Handler(order = 2)
+@Handler(order = 2, method = "PUT")
 public class PutMethodHandler extends MethodHandler {
 
     public PutMethodHandler() {
     }
 
-    public PutMethodHandler(String method, MethodHandler next, SocketService socketService, ResponseSerializer responseSerializer, Config config) {
-        super(method, next, socketService, responseSerializer, config);
+    public PutMethodHandler(String method, MethodHandler next, ResponseSerializer responseSerializer, Config config) {
+        super(method, next, responseSerializer, config);
     }
 
     @Override

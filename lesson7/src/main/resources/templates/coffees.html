@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Coffee Shop</title>
+</head>
+
+<body>
+
+<div>
+    <div>
+        <div>
+            <a th:href="@{/coffee/new}" type="button">Add Coffee</a>
+        </div>
+        <div>
+            <table>
+                <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Coffee name</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="coffee : ${coffees}">
+                    <th scope="row" th:text="${coffee.id}">1</th>
+                    <td th:text="${coffee.title}">None</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

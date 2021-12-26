@@ -22,10 +22,17 @@ public abstract class MethodHandler {
     public MethodHandler() {
     }
 
-    public MethodHandler(String method, MethodHandler next, SocketService socketService, ResponseSerializer responseSerializer, Config config) {
+    public SocketService getSocketService() {
+        return socketService;
+    }
+
+    public void setSocketService(SocketService socketService) {
+        this.socketService = socketService;
+    }
+
+    public MethodHandler(String method, MethodHandler next, ResponseSerializer responseSerializer, Config config) {
         this.method = method;
         this.next = next;
-        this.socketService = socketService;
         this.responseSerializer = responseSerializer;
         this.config = config;
     }

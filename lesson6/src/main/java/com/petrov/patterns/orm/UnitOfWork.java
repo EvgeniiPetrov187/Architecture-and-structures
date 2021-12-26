@@ -31,23 +31,24 @@ public class UnitOfWork {
         insert();
         update();
         delete();
+        clear();
     }
 
     private void update() {
-        for (User user : updateUsers){
-            userMapper.updateUser(user);
-        }
+        this.updateUsers.forEach(userMapper::updateUser);
     }
 
     private void insert() {
-        for (User user : newUsers){
-            userMapper.insertUser(user);
-        }
+        this.newUsers.forEach(userMapper::insertUser);
     }
 
     private void delete() {
-        for (User user: deleteUsers) {
-            userMapper.deleteById(user);
-        }
+        this.deleteUsers.forEach(userMapper::deleteUser);
+    }
+
+    private void clear() {
+        this.newUsers.clear();
+        this.updateUsers.clear();
+        this.deleteUsers.clear();
     }
 }
