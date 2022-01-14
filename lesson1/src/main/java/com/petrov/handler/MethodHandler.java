@@ -1,6 +1,7 @@
 package com.petrov.handler;
 
 import com.petrov.config.Config;
+import com.petrov.HttpFinalStrings;
 import com.petrov.domain.HttpRequest;
 import com.petrov.domain.HttpResponse;
 import com.petrov.domain.ResponseCode;
@@ -47,8 +48,8 @@ public abstract class MethodHandler {
         } else {
             response = HttpResponse.createBuilder()
                     .withStatus(ResponseCode.METHOD_NOT_ALLOWED)
-                    .withHeader("Content-Type", "text/html; charset=utf-8")
-                    .withBody("<h1>Метод не поддерживается!</h1>")
+                    .withHeader(HttpFinalStrings.CONTENT_TYPE, HttpFinalStrings.HEADER)
+                    .withBody(HttpFinalStrings.NOT_ALLOWED)
                     .build();
         }
         String rawResponse = responseSerializer.serialize(response);

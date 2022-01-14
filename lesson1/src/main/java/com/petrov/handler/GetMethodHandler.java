@@ -1,5 +1,6 @@
 package com.petrov.handler;
 
+import com.petrov.HttpFinalStrings;
 import com.petrov.config.Config;
 import com.petrov.domain.HttpRequest;
 import com.petrov.domain.HttpResponse;
@@ -29,8 +30,8 @@ public class GetMethodHandler extends MethodHandler {
         if (!Files.exists(path)) {
             return HttpResponse.createBuilder()
                     .withStatus(ResponseCode.NOT_FOUND)
-                    .withHeader("Content-Type", "text/html; charset=utf-8")
-                    .withBody("<h1>Файл не найден!</h1>")
+                    .withHeader(HttpFinalStrings.CONTENT_TYPE, HttpFinalStrings.HEADER)
+                    .withBody(HttpFinalStrings.NOT_FOUND)
                     .build();
         }
 
@@ -43,7 +44,7 @@ public class GetMethodHandler extends MethodHandler {
 
         return HttpResponse.createBuilder()
                 .withStatus(ResponseCode.OK)
-                .withHeader("Content-Type", "text/html; charset=utf-8")
+                .withHeader(HttpFinalStrings.CONTENT_TYPE, HttpFinalStrings.HEADER)
                 .withBody(sb.toString())
                 .build();
     }
