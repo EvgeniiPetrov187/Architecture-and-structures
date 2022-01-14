@@ -1,5 +1,6 @@
 package com.petrov.handler;
 
+import com.petrov.StartApp;
 import com.petrov.config.Config;
 import com.petrov.domain.HttpRequest;
 import com.petrov.domain.HttpResponse;
@@ -14,7 +15,7 @@ import java.util.*;
 public class MethodHandlerFactory {
 
     public static MethodHandler create(ResponseSerializer responseSerializer, Config config) {
-        Reflections reflections = new Reflections("com.petrov");
+        Reflections reflections = new Reflections(StartApp.class.getPackage().getName());
         List<Class<?>> classes = new ArrayList<>(reflections.getTypesAnnotatedWith(Handler.class));
 
         MethodHandler prev = null;

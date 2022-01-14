@@ -1,5 +1,6 @@
 package com.petrov.handler;
 
+import com.petrov.HttpFinalStrings;
 import com.petrov.config.Config;
 import com.petrov.domain.HttpRequest;
 import com.petrov.domain.HttpResponse;
@@ -21,7 +22,7 @@ public class PutMethodHandler extends MethodHandler {
     protected HttpResponse handleInternal(HttpRequest request) {
         return HttpResponse.createBuilder()
                 .withStatus(ResponseCode.OK)
-                .withHeader("Content-Type", "text/html; charset=utf-8")
+                .withHeader(HttpFinalStrings.CONTENT_TYPE, HttpFinalStrings.HEADER)
                 .withBody("<h1>PUT method handled</h1>")
                 .build();
     }
