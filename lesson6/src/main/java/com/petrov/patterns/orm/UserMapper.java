@@ -53,7 +53,7 @@ public class UserMapper {
         return Optional.empty();
     }
 
-    public void deleteById(User user) {
+    public void deleteUser(User user) {
         if (identityMap.get(user.getId()) != null) {
             identityMap.remove(user.getId());
         }
